@@ -104,6 +104,22 @@ theorem hausdorffMeasure_graphSet_le {ν : E} (hν : ‖ν‖ = 1) {φ : E → �
   rw [graphSet_eq_image hν φ z]
   exact (lipschitzOnWith_graphParam hν hφ z).hausdorffMeasure_image_le hd
 
+/-- Hausdorff-measure bound for the graph over an arbitrary hyperplane subset. -/
+theorem hausdorffMeasure_graphParam_image_le {ν : E} (hν : ‖ν‖ = 1) {φ : E → ℝ} {K : ℝ≥0}
+    (hφ : LipschitzWith K φ) (z : E) {d : ℝ} (hd : 0 ≤ d) {S : Set E} (hS : S ⊆ hyperplane ν) :
+    μH[d] (graphParam z ν φ '' S)
+      ≤ ((Real.sqrt (1 + (K : ℝ) ^ 2)).toNNReal : ℝ≥0∞) ^ d * μH[d] S :=
+  ((lipschitzOnWith_graphParam hν hφ z).mono hS).hausdorffMeasure_image_le hd
+
+/-- If a hyperplane region has finite `d`-dimensional Hausdorff measure, so does the graph over it.
+This reduces surface-measure finiteness on a Lipschitz graph to finiteness on the flat hyperplane
+(which holds for bounded regions, since `μH[dim-1]` is a Haar measure on the hyperplane subspace). -/
+theorem hausdorffMeasure_graphParam_image_lt_top {ν : E} (hν : ‖ν‖ = 1) {φ : E → ℝ} {K : ℝ≥0}
+    (hφ : LipschitzWith K φ) (z : E) {d : ℝ} (hd : 0 ≤ d) {S : Set E} (hS : S ⊆ hyperplane ν)
+    (hSfin : μH[d] S < ⊤) : μH[d] (graphParam z ν φ '' S) < ⊤ :=
+  lt_of_le_of_lt (hausdorffMeasure_graphParam_image_le hν hφ z hd hS)
+    (ENNReal.mul_lt_top (ENNReal.rpow_lt_top_of_nonneg hd ENNReal.coe_ne_top) hSfin)
+
 /-- The **surface measure** on `∂Ω`: the `(dim - 1)`-dimensional Hausdorff measure restricted to the
 boundary. -/
 noncomputable def surfaceMeasure (Ω : Set E) : Measure E :=
