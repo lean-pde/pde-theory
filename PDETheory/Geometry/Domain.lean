@@ -4,6 +4,7 @@ import PDETheory.Geometry.Domain.Lipschitz
 import PDETheory.Geometry.Domain.Smooth
 import PDETheory.Geometry.Domain.Bounded
 import PDETheory.Geometry.Domain.SurfaceMeasure
+import PDETheory.Geometry.Domain.Normal
 import PDETheory.Geometry.Domain.Examples
 
 /-!
@@ -23,5 +24,7 @@ This is the aggregator module for the theory of domains with regular boundary. I
   (Lipschitz character), and its existence via compactness of the boundary.
 * `PDETheory.Geometry.Domain.SurfaceMeasure` — the graph parametrisation and its `√(1+K²)`-Lipschitz
   bound, the Hausdorff-measure bound on the boundary graph, and the surface measure.
+* `PDETheory.Geometry.Domain.Normal` — the outward unit normal `outwardNormal ν g` from a horizontal
+  gradient (unit length, orientation, tangent-orthogonality) and its a.e. existence via Rademacher.
 * `PDETheory.Geometry.Domain.Examples` — the half-space as a worked example.
 -/
