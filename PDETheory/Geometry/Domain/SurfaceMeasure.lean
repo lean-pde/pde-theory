@@ -120,6 +120,64 @@ theorem hausdorffMeasure_graphParam_image_lt_top {ν : E} (hν : ‖ν‖ = 1) {
   lt_of_le_of_lt (hausdorffMeasure_graphParam_image_le hν hφ z hd hS)
     (ENNReal.mul_lt_top (ENNReal.rpow_lt_top_of_nonneg hd ENNReal.coe_ne_top) hSfin)
 
+open Module in
+/-- **A bounded region of a hyperplane has finite `(dim - 1)`-dimensional Hausdorff measure.**
+This is the flat model case; combined with `hausdorffMeasure_graphParam_image_lt_top` it gives
+finiteness of surface measure on a bounded Lipschitz graph. The proof transports the region to the
+subspace `(ℝ ∙ ν)ᗮ`, on which `μH[dim - 1]` is a Haar measure (hence finite on compacts). -/
+theorem hausdorffMeasure_hyperplane_lt_top [FiniteDimensional ℝ E] {ν : E} (hν : ν ≠ 0)
+    {S : Set E} (hSsub : S ⊆ hyperplane ν) (hSb : Bornology.IsBounded S) :
+    μH[((finrank ℝ E - 1 : ℕ) : ℝ)] S < ⊤ := by
+  set K : Submodule ℝ E := (ℝ ∙ ν)ᗮ with hKdef
+  -- The hyperplane is exactly the orthogonal complement of `ℝ ∙ ν`.
+  have hHK : hyperplane ν = (K : Set E) := by
+    ext u
+    simp only [hyperplane, mem_ofPred_eq, hKdef, SetLike.mem_coe,
+      Submodule.mem_orthogonal_singleton_iff_inner_left]
+  -- Dimension count: `finrank K = finrank E - 1`.
+  have hfr : finrank ℝ K = finrank ℝ E - 1 := by
+    have h1 : finrank ℝ (ℝ ∙ ν) = 1 := finrank_span_singleton hν
+    have h2 := Submodule.finrank_add_finrank_orthogonal (K := (ℝ ∙ ν : Submodule ℝ E))
+    rw [← hKdef] at h2
+    omega
+  -- The isometric inclusion `K ↪ E`.
+  set e : K →ₗᵢ[ℝ] E := K.subtypeₗᵢ with hedef
+  have hiso : Isometry e := e.isometry
+  have hrange : Set.range (e : K → E) = (K : Set E) := by
+    rw [hedef, Submodule.coe_subtypeₗᵢ]; exact Subtype.range_coe
+  -- Pull `S` back to `T ⊆ K`.
+  set T : Set K := (e : K → E) ⁻¹' S with hTdef
+  have himg : (e : K → E) '' T = S := by
+    rw [hTdef, Set.image_preimage_eq_inter_range, hrange, Set.inter_eq_left.mpr]
+    rw [← hHK]; exact hSsub
+  -- Transport Hausdorff measure through the isometry.
+  have hmeas : μH[((finrank ℝ E - 1 : ℕ) : ℝ)] S = μH[((finrank ℝ E - 1 : ℕ) : ℝ)] T := by
+    rw [← himg]; exact hiso.hausdorffMeasure_image (Or.inl (by positivity)) T
+  -- `T` is bounded, hence has compact closure in the finite-dimensional space `K`.
+  have hTb : Bornology.IsBounded T := hiso.antilipschitz.isBounded_preimage hSb
+  have : ProperSpace K := FiniteDimensional.proper ℝ K
+  have hTc : IsCompact (closure T) :=
+    Metric.isCompact_of_isClosed_isBounded isClosed_closure hTb.closure
+  -- On `K`, `μH[finrank K]` is a Haar measure, so finite on the compact `closure T`.
+  have hlt : μH[(finrank ℝ K : ℝ)] (closure T) < ⊤ := hTc.measure_lt_top
+  rw [hmeas]
+  calc μH[((finrank ℝ E - 1 : ℕ) : ℝ)] T
+      = μH[(finrank ℝ K : ℝ)] T := by rw [hfr]
+    _ ≤ μH[(finrank ℝ K : ℝ)] (closure T) := measure_mono subset_closure
+    _ < ⊤ := hlt
+
+open Module in
+/-- **Finiteness of surface measure on a bounded piece of a Lipschitz graph.** The graph over a
+bounded region `S` of the hyperplane has finite `(dim - 1)`-dimensional Hausdorff measure. This
+combines the flat-hyperplane finiteness with the Lipschitz-graph image bound, and is the key
+integrability input for surface integrals over a bounded Lipschitz boundary. -/
+theorem hausdorffMeasure_graphParam_image_bounded_lt_top [FiniteDimensional ℝ E] {ν : E}
+    (hν : ‖ν‖ = 1) {φ : E → ℝ} {K : ℝ≥0} (hφ : LipschitzWith K φ) (z : E)
+    {S : Set E} (hSsub : S ⊆ hyperplane ν) (hSb : Bornology.IsBounded S) :
+    μH[((finrank ℝ E - 1 : ℕ) : ℝ)] (graphParam z ν φ '' S) < ⊤ :=
+  hausdorffMeasure_graphParam_image_lt_top hν hφ z (by positivity) hSsub
+    (hausdorffMeasure_hyperplane_lt_top (by rw [← norm_pos_iff, hν]; norm_num) hSsub hSb)
+
 /-- The **surface measure** on `∂Ω`: the `(dim - 1)`-dimensional Hausdorff measure restricted to the
 boundary. -/
 noncomputable def surfaceMeasure (Ω : Set E) : Measure E :=
