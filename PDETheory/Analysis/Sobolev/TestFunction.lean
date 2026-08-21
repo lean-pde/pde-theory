@@ -1,4 +1,8 @@
-import Mathlib
+import Mathlib.Analysis.Calculus.ContDiff.Operations
+import Mathlib.Analysis.Normed.Module.FiniteDimension
+import Mathlib.Topology.Algebra.Support
+import Mathlib.MeasureTheory.Function.LpSpace.Indicator
+import Mathlib.MeasureTheory.Function.LocallyIntegrable
 
 /-!
 # Test functions and test fields
@@ -61,7 +65,7 @@ lemma add (h : IsTestField Ω φ) (h' : IsTestField Ω ψ) : IsTestField Ω (φ 
     intro x hx
     simp only [Function.mem_support, Pi.add_apply, Set.mem_union] at hx ⊢
     by_contra hc
-    push_neg at hc
+    simp only [not_or, not_not] at hc
     exact hx (by rw [hc.1, hc.2, add_zero])
   refine (closure_mono hsub).trans ?_
   rw [closure_union]

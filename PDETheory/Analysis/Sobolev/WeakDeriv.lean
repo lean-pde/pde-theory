@@ -1,4 +1,7 @@
 import PDETheory.Analysis.Sobolev.TestFunction
+import Mathlib.Analysis.Calculus.FDeriv.Const
+import Mathlib.Analysis.Calculus.LineDeriv.IntegrationByParts
+import Mathlib.MeasureTheory.VectorMeasure.SetIntegral
 
 /-!
 # Weak (distributional) derivatives on a domain
