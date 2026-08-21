@@ -115,4 +115,55 @@ theorem inner_graphNormal_normal_neg [FiniteDimensional ℝ E] {ν : E} (hν : �
     (u : ((ℝ ∙ ν)ᗮ : Submodule ℝ E)) : ⟪graphNormal ν φ u, ν⟫ < 0 :=
   inner_outwardNormal_normal_neg hν (inner_coe_orthogonal_normal ν _)
 
+/-! ### The bundled outward unit normal field
+
+For a bare function `n : E → E` there is no guarantee that it is *any* kind of normal, which would
+make a boundary flux `∫_{∂Ω} ⟪F, n⟫ dσ` meaningless. The structure below packages the
+coordinate-free requirements that make it a genuine **outward unit normal field**: measurability (so
+the flux is well defined), unit length on `∂Ω`, and a geometric outward-orientation condition.
+
+Design note: `isOutward` fixes the *orientation* (which side of the boundary), coordinate-freely and
+without any rectifiability theory, but it pins only the outward hemisphere — a cone of tilted unit
+vectors satisfies it. The stronger requirement that `ν` equal the exact geometric normal `σ`-a.e.
+(the transported chart normal `graphNormal`), which is what makes the divergence *identity* hold, is
+deliberately kept out of this structure: it is chart-coupled and needs the boundary surface-integral
+transport (or rectifiability). See `PDETheory.HasGaussGreen`. -/
+
+section Bundled
+variable [MeasurableSpace E]
+
+/-- An **outward unit normal field** for `Ω`: a measurable field `E → E` that is a unit vector at
+every boundary point and points geometrically outward there. -/
+structure OutwardNormal (Ω : Set E) where
+  /-- The underlying field; its values on `∂Ω` are what matter. -/
+  toFun : E → E
+  /-- Measurability, so the surface integral `∫_{∂Ω} ⟪F, ν⟫ dσ` is well defined. -/
+  measurable' : Measurable toFun
+  /-- `ν` is a unit vector at every boundary point. -/
+  unit_of_mem_frontier : ∀ x ∈ frontier Ω, ‖toFun x‖ = 1
+  /-- `ν` points outward: from a boundary point `x`, a small step along `+ν` leaves `closure Ω`
+  and a small step along `-ν` enters `Ω`. This fixes the orientation coordinate-freely. -/
+  isOutward : ∀ x ∈ frontier Ω, ∃ ε > 0, ∀ t ∈ Set.Ioo (0 : ℝ) ε,
+    x + t • toFun x ∉ closure Ω ∧ x - t • toFun x ∈ Ω
+
+namespace OutwardNormal
+
+variable {Ω : Set E}
+
+instance : CoeFun (OutwardNormal Ω) (fun _ => E → E) := ⟨toFun⟩
+
+@[simp] lemma coe_mk (f h₁ h₂ h₃) : ⇑(⟨f, h₁, h₂, h₃⟩ : OutwardNormal Ω) = f := rfl
+
+/-- The outward normal is measurable. -/
+theorem measurable (ν : OutwardNormal Ω) : Measurable (ν : E → E) := ν.measurable'
+
+/-- The outward normal is a unit vector on the boundary. -/
+@[simp] theorem norm_eq_one_of_mem_frontier (ν : OutwardNormal Ω) {x : E}
+    (hx : x ∈ frontier Ω) : ‖ν x‖ = 1 :=
+  ν.unit_of_mem_frontier x hx
+
+end OutwardNormal
+
+end Bundled
+
 end PDETheory
