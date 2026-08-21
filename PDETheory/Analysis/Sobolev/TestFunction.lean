@@ -31,7 +31,7 @@ open MeasureTheory
 
 namespace PDETheory
 
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
 
 /-- `φ : E → F` is a **test field** on `Ω`: smooth, compactly supported, with support inside `Ω`. -/
