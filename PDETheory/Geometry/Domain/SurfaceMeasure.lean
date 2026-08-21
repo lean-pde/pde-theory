@@ -178,9 +178,24 @@ theorem hausdorffMeasure_graphParam_image_bounded_lt_top [FiniteDimensional ℝ 
   hausdorffMeasure_graphParam_image_lt_top hν hφ z (by positivity) hSsub
     (hausdorffMeasure_hyperplane_lt_top (by rw [← norm_pos_iff, hν]; norm_num) hSsub hSb)
 
-/-- The **surface measure** on `∂Ω`: the `(dim - 1)`-dimensional Hausdorff measure restricted to the
-boundary. -/
+open Module in
+/-- **Euclidean-normalized** flat-hyperplane finiteness: a bounded region of a hyperplane has finite
+`μHE[dim - 1]`. The surface measure is built from the Euclidean Hausdorff measure `μHE`, not raw
+`μH`: mathlib's `μH[s]` carries the sup-metric normalization and differs from the genuine geometric
+surface measure by the isodiametric factor (e.g. `4/π` in codimension 1 on `ℝ³`), which would make
+the divergence theorem quantitatively wrong for `dim ≥ 3`. Since `μHE[d] = c • μH[d]` with a finite
+nonzero constant `c`, finiteness transfers from `hausdorffMeasure_hyperplane_lt_top`. -/
+theorem euclideanHausdorffMeasure_hyperplane_lt_top [FiniteDimensional ℝ E] {ν : E} (hν : ν ≠ 0)
+    {S : Set E} (hSsub : S ⊆ hyperplane ν) (hSb : Bornology.IsBounded S) :
+    μHE[finrank ℝ E - 1] S < ⊤ := by
+  rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, ENNReal.smul_def]
+  exact ENNReal.mul_lt_top ENNReal.coe_lt_top (hausdorffMeasure_hyperplane_lt_top hν hSsub hSb)
+
+/-- The **surface measure** on `∂Ω`: the Euclidean-normalized `(dim - 1)`-dimensional Hausdorff
+measure `μHE[dim - 1]` restricted to the boundary. `μHE` (not raw `μH`) is used so that on affine
+subspaces it agrees with Lebesgue measure — the genuine geometric surface measure — which is what
+makes the divergence theorem quantitatively correct in every dimension. -/
 noncomputable def surfaceMeasure (Ω : Set E) : Measure E :=
-  (μH[((Module.finrank ℝ E - 1 : ℕ) : ℝ)]).restrict (frontier Ω)
+  (μHE[Module.finrank ℝ E - 1]).restrict (frontier Ω)
 
 end PDETheory
