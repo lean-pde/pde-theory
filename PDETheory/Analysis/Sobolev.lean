@@ -5,6 +5,7 @@ import PDETheory.Analysis.Sobolev.MemW1p0
 import PDETheory.Analysis.Sobolev.Poincare
 import PDETheory.Analysis.Sobolev.Divergence
 import PDETheory.Analysis.Sobolev.LpOn
+import PDETheory.Analysis.Sobolev.H10Space
 
 /-!
 # Sobolev spaces on domains
@@ -27,4 +28,7 @@ Fréchet derivative. Re-exports:
   (`vectorDivergence`) and the distributional divergence-free condition (`IsWeaklyDivFree`).
 * `PDETheory.Analysis.Sobolev.LpOn` — the bundled `Lᵖ(Ω)` Banach/Hilbert space (`LpOn`) with the
   `Mem…`-to-bundled bridge (`MemLpOn.toLpOn`, `norm_toLpOn`).
+* `PDETheory.Analysis.Sobolev.H10Space` — the bundled `H¹₀(Ω)` Hilbert space in coordinate form
+  (`H10Space`), with the Hilbert–Schmidt Jacobian (`gradPi`, `GradFib`) as the coordinate model
+  for the weak gradient.
 -/
