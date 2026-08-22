@@ -6,6 +6,7 @@ import PDETheory.Analysis.Sobolev.Poincare
 import PDETheory.Analysis.Sobolev.Divergence
 import PDETheory.Analysis.Sobolev.LpOn
 import PDETheory.Analysis.Sobolev.H10Space
+import PDETheory.Analysis.Sobolev.LaxMilgram
 
 /-!
 # Sobolev spaces on domains
@@ -31,4 +32,7 @@ Fréchet derivative. Re-exports:
 * `PDETheory.Analysis.Sobolev.H10Space` — the bundled `H¹₀(Ω)` Hilbert space in coordinate form
   (`H10Space`), with the Hilbert–Schmidt Jacobian (`gradPi`, `GradFib`) as the coordinate model
   for the weak gradient.
+* `PDETheory.Analysis.Sobolev.LaxMilgram` — the weak-form operator interface: the bounded operator
+  of a `ℂ`-sesquilinear form (`formOperator`) and the real coercive Lax–Milgram equivalence
+  (`coerciveEquiv`).
 -/
