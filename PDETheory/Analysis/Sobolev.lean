@@ -3,6 +3,8 @@ import PDETheory.Analysis.Sobolev.WeakDeriv
 import PDETheory.Analysis.Sobolev.MemWkp
 import PDETheory.Analysis.Sobolev.MemW1p0
 import PDETheory.Analysis.Sobolev.Poincare
+import PDETheory.Analysis.Sobolev.Divergence
+import PDETheory.Analysis.Sobolev.LpOn
 
 /-!
 # Sobolev spaces on domains
