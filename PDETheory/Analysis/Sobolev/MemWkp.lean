@@ -42,6 +42,15 @@ applied to `(E →L[ℝ] F)`-valued fields without an expensive `isDefEq` on the
 @[simp] lemma eLpNormOn_zero (Ω : Set E) (μ : Measure E) (p : ℝ≥0∞) :
     eLpNormOn Ω μ p (0 : E → G) = 0 := eLpNorm_zero
 
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] [BorelSpace E] [FiniteDimensional ℝ E]
+  [NormedSpace ℝ G] in
+/-- If a field is supported in `Ω`, its `Lᵖ(Ω)` seminorm equals its whole-space `Lᵖ` seminorm: the
+restriction discards only mass where the field vanishes. Proved generically over the codomain so the
+`ENormedAddMonoid`/zero `isDefEq` stays cheap on `(E →L[ℝ] F)`-valued fields (e.g. gradients). -/
+theorem eLpNormOn_eq_eLpNorm_of_support_subset {Ω : Set E} {p : ℝ≥0∞} {f : E → G}
+    (hf : Function.support f ⊆ Ω) : eLpNormOn Ω μ p f = eLpNorm f p μ :=
+  eLpNorm_restrict_eq_of_support_subset hf
+
 /-- `u ∈ W^{1,p}(Ω)`: `u ∈ Lᵖ(Ω)` together with a weak Fréchet derivative in `Lᵖ(Ω)`. -/
 def MemW1p (Ω : Set E) (μ : Measure E) (p : ℝ≥0∞) (u : E → F) : Prop :=
   MemLpOn Ω μ p u ∧ ∃ u' : E → (E →L[ℝ] F), IsWeakDeriv Ω μ u u' ∧ MemLpOn Ω μ p u'

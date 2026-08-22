@@ -22,5 +22,9 @@ Fréchet derivative. Re-exports:
 * `PDETheory.Analysis.Sobolev.MemW1p0` — the zero-trace space `W^{1,p}₀(Ω)` (`MemW1p0`) / `H¹₀(Ω)`
   (`MemH10`), with `IsTestField.memW1p0`.
 * `PDETheory.Analysis.Sobolev.Poincare` — the Poincaré inequality for test fields on a bounded
-  domain (`poincare_testField`).
+  domain (`poincare_testField`) and its extension to `H¹₀` (`poincare_H10`).
+* `PDETheory.Analysis.Sobolev.Divergence` — the divergence of a `𝕜`-valued vector field
+  (`vectorDivergence`) and the distributional divergence-free condition (`IsWeaklyDivFree`).
+* `PDETheory.Analysis.Sobolev.LpOn` — the bundled `Lᵖ(Ω)` Banach/Hilbert space (`LpOn`) with the
+  `Mem…`-to-bundled bridge (`MemLpOn.toLpOn`, `norm_toLpOn`).
 -/
