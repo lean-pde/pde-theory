@@ -14,6 +14,8 @@ abbreviation and the `Mem… ↔ ∈` bridge lemmas connecting the predicate lay
 * `PDETheory.LpOn Ω μ p F := Lp F p (μ.restrict Ω)` — the bundled `Lᵖ(Ω; F)`.
 * `PDETheory.MemLpOn.toLpOn` / `coeFn_toLpOn` / `mem_LpOn_iff_memLpOn` — the bridge.
 * `PDETheory.norm_toLpOn` : `‖h.toLpOn‖ = (eLpNormOn Ω μ p f).toReal` — the `ℝ≥0∞ → ℝ` off-ramp.
+* `PDETheory.fact_one_le_ofReal` : `1 ≤ p` (real) supplies `Fact (1 ≤ ENNReal.ofReal p)`, unlocking the
+  bundled Banach/Hilbert structure when the exponent is given as a real number.
 
 For `p = 2`, `[RCLike 𝕜] [InnerProductSpace 𝕜 F]`, `LpOn Ω μ 2 F` is a `𝕜`-Hilbert space
 (`⟪f,g⟫ = ∫_Ω ⟪f x, g x⟫`) — over `ℂ` in particular — inherited from `L2.innerProductSpace`.
@@ -55,10 +57,24 @@ theorem norm_toLpOn [Fact (1 ≤ p)] {f : E → F} (h : MemLpOn Ω μ p f) :
   rw [Lp.norm_def, eLpNorm_congr_ae h.coeFn_toLpOn]
   rfl
 
+/-- **Real-exponent Banach/Hilbert structure.** Applications state the exponent as a real number `p`
+and pass it as `ENNReal.ofReal p`; from `1 ≤ p` this supplies the `Fact (1 ≤ ENNReal.ofReal p)` that
+endows `LpOn Ω μ (ENNReal.ofReal p) F` with its `NormedSpace`/`CompleteSpace` (Banach) structure —
+and, at `p = 2` with an inner-product codomain, its Hilbert structure. Register it at a use site with
+`have := PDETheory.fact_one_le_ofReal hp`. -/
+theorem fact_one_le_ofReal {p : ℝ} (hp : 1 ≤ p) : Fact (1 ≤ ENNReal.ofReal p) :=
+  ⟨ENNReal.one_le_ofReal.2 hp⟩
+
 /-- Sanity check: `L²(Ω)` with complex-vector codomain is a complex Hilbert space (and complete). -/
 example {d : ℕ} {Ω : Set (EuclideanSpace ℝ (Fin d))} : True := by
   have : InnerProductSpace ℂ (LpOn Ω volume 2 (EuclideanSpace ℂ (Fin d))) := inferInstance
   have : CompleteSpace (LpOn Ω volume 2 (EuclideanSpace ℂ (Fin d))) := inferInstance
+  trivial
+
+/-- Sanity check: with a real exponent `1 ≤ p`, the bundled `Lᵖ(Ω)` is a Banach space. -/
+example {d : ℕ} {Ω : Set (EuclideanSpace ℝ (Fin d))} {p : ℝ} (hp : 1 ≤ p) : True := by
+  have := fact_one_le_ofReal hp
+  have : CompleteSpace (LpOn Ω volume (ENNReal.ofReal p) (EuclideanSpace ℂ (Fin d))) := inferInstance
   trivial
 
 end PDETheory
